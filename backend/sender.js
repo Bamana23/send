@@ -19,7 +19,7 @@ if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
 
 // Configuration du transporteur Nodemailer
 const transporter = nodemailer.createTransport({
-    host: "smtp.orange.fr",
+    host: "smtp.gmail.com",
     port: 587, // Changement du port pour tester avec TLS
     secure: false, // TLS activé
     auth: {
