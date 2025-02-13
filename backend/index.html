@@ -1,0 +1,40 @@
+const fs = require("fs");
+const frontendCode = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envoi d'e-mails</title>
+    <script defer>
+        async function sendEmail() {
+            const recipients = document.getElementById("recipients").value.split(",");
+            const subject = document.getElementById("subject").value;
+            const message = document.getElementById("message").value;
+
+            const response = await fetch("/send", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ recipients, subject, message })
+            });
+            const result = await response.json();
+            alert(result.success || result.error);
+        }
+    </script>
+</head>
+<body>
+    <h1>Envoi d'e-mails en masse</h1>
+    <label>Destinataires (séparés par des virgules)</label>
+    <input type="text" id="recipients" placeholder="ex: email1@example.com, email2@example.com"><br>
+    <label>Sujet</label>
+    <input type="text" id="subject" placeholder="Sujet de l'e-mail"><br>
+    <label>Message</label>
+    <textarea id="message" placeholder="Contenu de l'e-mail"></textarea><br>
+    <button onclick="sendEmail()">Envoyer</button>
+</body>
+</html>
+`;
+
+fs.mkdirSync("frontend", { recursive: true });
+fs.writeFileSync("frontend/index.html", frontendCode);
+console.log("Interface frontend créée avec succès.");

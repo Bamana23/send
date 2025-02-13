@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envoi d'e-mail</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        textarea, input {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+        }
+        button {
+            width: 48%;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        #status {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Envoyer un e-mail</h2>
+    <input type="email" id="recipients" placeholder="Destinataire (ex: test@example.com)" required>
+    <input type="text" id="subject" placeholder="Sujet" required>
+    <textarea id="message" placeholder="Votre message" rows="5" required></textarea>
+    <button onclick="sendEmail(false)">Envoyer en Texte</button>
+    <button onclick="sendEmail(true)">Envoyer en HTML</button>
+    <p id="status"></p>
+
+    <script>
+        async function sendEmail(isHtml) {
+            const recipients = document.getElementById("recipients").value;
+            const subject = document.getElementById("subject").value;
+            const message = document.getElementById("message").value;
+            const status = document.getElementById("status");
+
+            if (!recipients || !subject || !message) {
+                status.textContent = "Veuillez remplir tous les champs.";
+                status.style.color = "red";
+                return;
+            }
+
+            try {
+                const response = await fetch("/send", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ recipients, subject, message, isHtml })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    status.textContent = result.success;
+                    status.style.color = "green";
+                } else {
+                    status.textContent = result.error;
+                    status.style.color = "red";
+                }
+            } catch (error) {
+                status.textContent = "Erreur d'envoi : " + error.message;
+                status.style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>
